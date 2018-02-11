@@ -49,7 +49,7 @@ class LIFNeuron():
 
         if self.debug:
             print ('LIFNeuron.spike_generator({}).initial_state(input={}, duration={}, initial Vm={}, t={}, debug={})'
-                   .format(self.neuron_label, neuron_input, duration, Vm[-1], self.t, self.debug))
+                   .format(self.neuron_label, neuron_input.shape, duration, Vm[-1], self.t, self.debug))
 
         for i in range(duration):
             if self.debug == "INFO":
@@ -79,6 +79,7 @@ class LIFNeuron():
 
         if self.debug:
             print ('LIFNeuron.spike_generator({}).exit_state(Vm={} at iteration i={}, time={})'
-                   .format(self.neuron_label, self.Vm, i, self.t))
+                   .format(self.neuron_label, self.Vm.shape, i, self.t))
 
             # return time, Vm, output
+            
