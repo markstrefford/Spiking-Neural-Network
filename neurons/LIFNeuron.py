@@ -14,7 +14,7 @@ Requires Python 3.x and Numpy
 import numpy as np
 
 class LIFNeuron():
-    def __init__(self, debug=True):
+    def __init__(self, neuron_label = "LIF", debug=True):
         # Simulation config (may not all be needed!!)
         self.dt = 0.125  # simulation time step
         self.t_rest = 0  # initial refractory time
@@ -24,7 +24,6 @@ class LIFNeuron():
         self.time = np.array([0])  # Time duration for the neuron (needed?)
         self.spikes = np.array([0])  # Output (spikes) for the neuron
 
-        # self.output   = 0               # Neuron output
         self.t = 0  # Neuron time step
         self.Rm = 1  # Resistance (kOhm)
         self.Cm = 10  # Capacitance (uF)
@@ -33,46 +32,43 @@ class LIFNeuron():
         self.Vth = 0.75  # = 1  #spike threshold
         self.V_spike = 1  # spike delta (V)
         self.type = 'Leaky Integrate and Fire'
+        self.neuron_label = neuron_label
         self.debug = debug
         if self.debug:
-            print ('LIFNeuron(): Created {} neuron starting at time {}'.format(self.type, self.t))
+            print ('LIFNeuron({}): Created {} neuron starting at time {}'.format(self.neuron_label, self.type, self.t))
 
     def spike_generator(self, neuron_input):
         # Create local arrays for this run
         duration = len(neuron_input)
         Vm = np.zeros(duration)  # len(time)) # potential (V) trace over time
-        time = np.arange(self.t, self.t + duration)
+        time = np.arange(int(self.t / self.dt), int(self.t / self.dt) + duration)
         spikes = np.zeros(duration)  # len(time))
-
-        if self.debug:
-            print ('spike_generator(): Running time period self.t={}, self.t+duration={}'
-                   .format(self.t, self.t + duration))
 
         # Seed the new array with previous value of last run
         Vm[-1] = self.Vm[-1]
 
         if self.debug:
-            print ('LIFNeuron.spike_generator.initial_state(input={}, duration={}, initial Vm={}, t={})'
-                   .format(neuron_input, duration, Vm[-1], self.t))
+            print ('LIFNeuron.spike_generator({}).initial_state(input={}, duration={}, initial Vm={}, t={}, debug={})'
+                   .format(self.neuron_label, neuron_input, duration, Vm[-1], self.t, self.debug))
 
         for i in range(duration):
-            if self.debug:
+            if self.debug == "INFO":
                 print ('Index {}'.format(i))
 
             if self.t > self.t_rest:
                 Vm[i] = Vm[i - 1] + (-Vm[i - 1] + neuron_input[i - 1] * self.Rm) / self.tau_m * self.dt
 
-                if self.debug:
+                if self.debug == "INFO":
                     print(
-                    'spike_generator(): i={}, self.t={}, Vm[i]={}, neuron_input={}, self.Rm={}, self.tau_m * self.dt = {}'
-                    .format(i, self.t, Vm[i], neuron_input[i], self.Rm, self.tau_m * self.dt))
+                    'spike_generator({}): i={}, self.t={}, Vm[i]={}, neuron_input={}, self.Rm={}, self.tau_m * self.dt = {}'
+                    .format(self.neuron_label, i, self.t, Vm[i], neuron_input[i], self.Rm, self.tau_m * self.dt))
 
                 if Vm[i] >= self.Vth:
                     spikes[i] += self.V_spike
                     self.t_rest = self.t + self.tau_ref
                     if self.debug:
-                        print ('*** LIFNeuron.spike_generator.spike=(self.t_rest={}, self.t={}, self.tau_ref={})'
-                               .format(self.t_rest, self.t, self.tau_ref))
+                        print ('*** LIFNeuron.spike_generator({}).spike=(self.t_rest={}, self.t={}, self.tau_ref={})'
+                               .format(self.neuron_label, self.t_rest, self.t, self.tau_ref))
 
             self.t += self.dt
 
@@ -82,7 +78,7 @@ class LIFNeuron():
         self.time = np.append(self.time, time)
 
         if self.debug:
-            print ('LIFNeuron.spike_generator.exit_state(Vm={} at iteration i={}, time={})'
-                   .format(self.Vm, i, self.t))
+            print ('LIFNeuron.spike_generator({}).exit_state(Vm={} at iteration i={}, time={})'
+                   .format(self.neuron_label, self.Vm, i, self.t))
 
             # return time, Vm, output
