@@ -52,13 +52,13 @@ class LIFNeuron():
                    .format(self.neuron_label, neuron_input.shape, duration, Vm[-1], self.t, self.debug))
 
         for i in range(duration):
-            if self.debug == "INFO":
+            if self.debug == 'INFO':
                 print ('Index {}'.format(i))
 
             if self.t > self.t_rest:
                 Vm[i] = Vm[i - 1] + (-Vm[i - 1] + neuron_input[i - 1] * self.Rm) / self.tau_m * self.dt
 
-                if self.debug == "INFO":
+                if self.debug == 'INFO':
                     print(
                     'spike_generator({}): i={}, self.t={}, Vm[i]={}, neuron_input={}, self.Rm={}, self.tau_m * self.dt = {}'
                     .format(self.neuron_label, i, self.t, Vm[i], neuron_input[i], self.Rm, self.tau_m * self.dt))
@@ -82,4 +82,3 @@ class LIFNeuron():
                    .format(self.neuron_label, self.Vm.shape, i, self.t))
 
             # return time, Vm, output
-            
