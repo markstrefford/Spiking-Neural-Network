@@ -1,4 +1,4 @@
-# SNN_0
+# Spiking Neural Network Simulator
 Basic SNN propogating spikes between layers of LIF neurons
 
 This code is designed to demo the use of a Spiking Neural Network (SNN) to propogate spikes between layers of neurons. At this stage there is no learning involved, it's purely about propogating spikes between LIF neurons.
